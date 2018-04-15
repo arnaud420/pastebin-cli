@@ -1,0 +1,16 @@
+{
+ "name": "pastebin-cli",
+ "version": "1.0.0",
+ "description": "",
+ "main": "index.js",
+ "scripts": {
+  "start": "node index.js"
+ },
+ "bin": {
+  "pastebin": "./index.js"
+ },
+ "dependencies": {
+  "commander": "^2.15.1",
+  "pastebin-js": "^0.5.1"
+ }
+}
