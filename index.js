@@ -11,11 +11,19 @@ key = new Key(process.argv)
 const main = () => {
   if (key.options.post) {
     req = new Request()
-    req.postToPastebin(pastebin, key.options.post); 
+    req.postPastebin(pastebin, key.options.post, 'javascript', '10M'); 
   }
   else if (key.options.get) {
     req = new Request()
     req.getPastebin(pastebin, key.options.get)
+  }
+  else if (key.options.download) {
+  	if (key.options.download && key.options.args.length) {
+  		console.log(key.options.download + " " + key.options.args)
+  	}
+  	else {
+  		console.log("No args found " + key.options.download)
+  	}
   }
 }
   
