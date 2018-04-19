@@ -1,41 +1,21 @@
 const path = require('path');
 const mod = require('../modules');
+const fs = require('fs');
 
 class Request {
-	
-	postPastebin(obj, src) {
-		
-		const ext = mod.getFullNameFromExt(path.parse(src).ext);
-
-		try {
-			obj.createPasteFromFile(src, src, ext, 1, "10M")
-			.then(function (data) {
-				console.log(`You can find your pastebin link here => ${data}`);
-	    	})
-		    .fail(function (err) {
-		        console.error(err);
-		    });
-		}
-		catch(error) {
-			console.error(error);
-		}
+    
+    async postPastebin(obj, src) {
+        //const ext = mod.getFullNameFromExt(path.parse(src).ext);
+        return obj.createPasteFromFile(src, src, null, 1, "10M");
     }
 
-	getPastebin(obj, url) {
-		try {
-			obj.getPaste(url)
-			.then( (data) => {
-				console.log(data);
-			})
-			.fail( (err) => {
-				console.error(err);
-			})
-		}
-		catch(error) {
-			console.error(error);
-		}
-	
-	}
+    async getPastebin(obj, url) {
+        return obj.getPaste(url);
+    }
+
+    async getUserPastes(obj) {
+        return obj.listUserPastes();
+    }
 }
 
 module.exports = Request;

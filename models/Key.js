@@ -4,8 +4,8 @@ class Key {
 	constructor(arg) {
 		this.options = program.version('0.1.0')
 			.option('-p, --post [filePath]', 'Post a pastebin file')
-			.option('-g, --get [filePath]', 'Display a pastebin file content in console')
-			.option('-d, --download [pastebin] [path]', 'Download a pastebin and put it in a specific path')
+			.option('-d, --download [pastebinId] [path]', 'Download a pastebin and put it in a specific path')
+			.option('-l, --list', 'List user pastebins')
             .parse(arg);
         this.optionActions()
 	}
@@ -13,9 +13,6 @@ class Key {
 	optionActions() {
 		if (this.options.post) {
 			console.log('post');
-		}
-		else if (this.options.get) {
-			console.log("get");
 		}
 	}
 	
