@@ -1,8 +1,21 @@
 function getFullNameFromExt(ext) {
 	switch(ext) {
-	    case '.js':
+		case '.js':
 	        return 'javascript';
-	        break;
+		case '.py':
+			return 'python';
+		case '.java':
+			return 'java';
+		case '.php':
+			return 'php';
+		case '.css':
+			return 'css';
+		case '.html':
+			return 'html5';
+		case '.sql':
+			return 'sql';
+		case '.json':
+			return 'json';
 	    default:
 	        return 'text';
 	}
