@@ -4,7 +4,6 @@ const PastebinAPI = require('pastebin-js');
 const { API_KEY, API_USER_NAME, API_USER_PASSWORD } = require('./config.js');
 const { File, Key, Request } = require('./models');
 const fs = require('fs');
-const path = require('path');
 
 const pastebin = new PastebinAPI({
   'api_dev_key': API_KEY,
@@ -12,10 +11,10 @@ const pastebin = new PastebinAPI({
   'api_user_password': API_USER_PASSWORD
   });
 
-
 const key = new Key(process.argv);
 
 if (key.options.post) {
+
     const req = new Request();
     const file = key.options.post;
 
@@ -25,7 +24,7 @@ if (key.options.post) {
             console.log(`SUCCESS: Your pastebin is here => ${paste}`);
         }
         catch (e) {
-            console.error(e);
+            console.error(e.message);
         }
     }
     postToPastebin();
@@ -41,19 +40,11 @@ else if (key.options.download) {
         async function getPastebin() {
             try {
                 const pasteContent = await req.getPastebin(pastebin, key.options.download);
-
-                fs.mkdir(dir, (err) => {
-                    if (err) {
-                        console.error(err.message);
-                    }
-                    else {
-                        fs.writeFileSync(`${dir}/pastebin_${pasteId}`, pasteContent);
-                        console.log(`SUCCESS: Paste ${pasteId} created in ${dir} !`)
-                    }
-                });
+                const file = new File(pasteId, dir);
+                file.save(pasteContent);
             }
             catch (e) {
-                console.error(e);
+                console.error(e.message);
             }
         }
         getPastebin();
@@ -78,7 +69,7 @@ else if (key.options.list) {
             }
         }
         catch (e) {
-            console.error(e);
+            console.error(e.message);
         }
     }
     getUserPastes();
