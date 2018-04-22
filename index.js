@@ -15,13 +15,12 @@ const key = new Key(process.argv);
 
 if (key.options.post) {
 
-    const req = new Request();
     const file = key.options.post;
     const files = key.options.args;
     const promises = [];
 
     const sendFile = (file) => {
-        return req.postPastebin(pastebin, file);
+        return Request.postPastebin(pastebin, file);
     };
 
     async function postOnePastebin() {
@@ -65,13 +64,12 @@ else if (key.options.download) {
 
     const pasteId = key.options.download;
     const dir = key.options.args[0];
-    const req = new Request();
 
     if (key.options.download && key.options.args.length) {
 
         async function getPastebin() {
             try {
-                const pasteContent = await req.getPastebin(pastebin, key.options.download);
+                const pasteContent = await Request.getPastebin(pastebin, key.options.download);
                 const file = new File(pasteId, dir);
                 file.save(pasteContent);
             }
@@ -89,10 +87,9 @@ else if (key.options.download) {
 }
 
 else if (key.options.list) {
-    const req = new Request();
     async function getUserPastes() {
         try {
-            const pastes = await req.getUserPastes(pastebin);
+            const pastes = await Request.getUserPastes(pastebin);
             const pastesL = pastes.length;
 
             if (!pastesL) {
