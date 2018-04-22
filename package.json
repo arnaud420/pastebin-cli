@@ -12,6 +12,7 @@
  "dependencies": {
   "commander": "^2.15.1",
   "inquirer": "^5.2.0",
+  "moment": "^2.22.1",
   "pastebin-js": "^0.5.1"
  }
 }
