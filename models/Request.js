@@ -6,7 +6,10 @@ class Request {
     async postPastebin(obj, src) {
         const fileExt = mod.getFullNameFromExt(path.parse(src).ext);
         const fileName = path.basename(src);
-        return obj.createPasteFromFile(src, fileName, fileExt, 1, "10M");
+        return obj.createPasteFromFile(src, fileName, fileExt, 1, "10M")
+            .then( (res) =>
+                console.log(`SUCCESS: Your pastebin for ${src} is here => ${res}`)
+            );
     }
 
     async getPastebin(obj, url) {

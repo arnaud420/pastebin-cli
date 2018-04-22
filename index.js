@@ -3,7 +3,6 @@
 const PastebinAPI = require('pastebin-js');
 const { API_KEY, API_USER_NAME, API_USER_PASSWORD } = require('./config.js');
 const { File, Key, Request } = require('./models');
-const fs = require('fs');
 
 const pastebin = new PastebinAPI({
   'api_dev_key': API_KEY,
@@ -17,17 +16,48 @@ if (key.options.post) {
 
     const req = new Request();
     const file = key.options.post;
+    const files = key.options.args;
+    const promises = [];
 
-    async function postToPastebin() {
+    const sendFile = (file) => {
+        return req.postPastebin(pastebin, file);
+    };
+
+    async function postOnePastebin() {
         try {
-            const paste = await req.postPastebin(pastebin, file);
-            console.log(`SUCCESS: Your pastebin is here => ${paste}`);
+            await sendFile(file);
         }
         catch (e) {
             console.error(e.message);
         }
     }
-    postToPastebin();
+
+    async function postMultiplePastebin() {
+        try {
+            await Promise.all(promises.map( (callback) => callback() ));
+        }
+        catch (e) {
+            console.error(e.message);
+        }
+    }
+
+    const postAllFiles = () => {
+        postOnePastebin();
+        postMultiplePastebin();
+    };
+
+    if (!files.length) {
+        postOnePastebin();
+    }
+    else {
+        for (let i = 0; i < files.length; i++) {
+            promises.push( () => {
+                sendFile(files[i])
+            });
+        }
+        postAllFiles();
+    }
+
 }
 
 else if (key.options.download) {
