@@ -2,7 +2,7 @@
 
 const PastebinAPI = require('pastebin-js');
 const { API_KEY, API_USER_NAME, API_USER_PASSWORD } = require('./config.js');
-const { File, Key, Request } = require('./models');
+const { Key, Request } = require('./models');
 
 const pastebin = new PastebinAPI({
   'api_dev_key': API_KEY,
@@ -22,24 +22,42 @@ if (key.options.post) {
         Request.postOnePastebin(pastebin, file);
     }
     else {
+        files.push(file);
+
         for (let i = 0; i < files.length; i++) {
             promises.push( () => {
                 Request.postPastebin(pastebin, files[i]);
             });
         }
-        Request.postOnePastebin(pastebin, file);
-        Request.postMultiplePastebin(promises);
+        Request.postOrGetMultiplePastebin(promises);
     }
-
 }
 
 else if (key.options.download) {
 
     const pasteId = key.options.download;
-    const dir = key.options.args[0];
+    const args = key.options.args;
+    const arg = {
+        dir: args.slice(-1)[0],
+        files: args.slice(0, -1)
+    };
+    const promises = [];
 
-    if (pasteId && dir) {
-        Request.getPastebin(pastebin, pasteId, dir);
+    if (pasteId && args.length === 1) {
+
+        Request.getPastebin(pastebin, pasteId ,arg.dir)
+    }
+    else if (args.length > 1) {
+
+        arg.files.push(pasteId);
+
+        for (let i = 0; i < arg.files.length; i++) {
+            promises.push( () => {
+                Request.getPastebin(pastebin, arg.files[i], arg.dir);
+            })
+        }
+
+        Request.postOrGetMultiplePastebin(promises);
     }
     else {
         console.log(`ERROR: No args found. You need to specify a path. (EX: pastebin -d ${pasteId} ./save)`)

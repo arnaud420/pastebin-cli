@@ -1,22 +1,42 @@
 const fs = require('fs');
+const moment = require('moment');
 
 class File {
 	constructor(pasteName, path) {
         this.pasteName = pasteName;
         this.path = path;
+        this.today = moment().format("DD-MM-YY");
     }
 
     writeFile(pasteContent) {
-        fs.writeFileSync(`${this.path}/pastebin_${this.pasteName}`, pasteContent);
-        console.log(`SUCCESS: Paste ${this.pasteName} created in ${this.path} !`)
+	    const time = moment().format("HH:mm:ss");
+
+        fs.writeFileSync(`${this.path}/${this.today}/${time}_${this.pasteName}`, pasteContent);
+        console.log(`SUCCESS: Paste ${this.pasteName} created in ${this.path}/${this.today} !`)
     }
 
     save(pasteContent) {
 	    if (fs.existsSync(this.path)) {
-	        this.writeFile(pasteContent);
+            this.createTodayDir(pasteContent);
         }
         else {
             fs.mkdir(this.path, (err) => {
+                if (err) {
+                    console.error(err.message);
+                }
+                else {
+                    this.createTodayDir(pasteContent)
+                }
+            });
+        }
+	}
+
+	createTodayDir(pasteContent) {
+        if (fs.existsSync(this.path + '/' + this.today)) {
+            this.writeFile(pasteContent);
+        }
+        else {
+            fs.mkdir(this.path + '/' + this.today, (err) => {
                 if (err) {
                     console.error(err.message);
                 }
@@ -25,7 +45,8 @@ class File {
                 }
             });
         }
-	}
+    }
+
 }
 
 module.exports = File;

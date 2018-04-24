@@ -25,8 +25,8 @@ class Request {
         }
     }
 
-    // Post multiples files to pastebin
-    static async postMultiplePastebin(promises) {
+    // Post or get multiples promises found in an array
+    static async postOrGetMultiplePastebin(promises) {
         try {
             await Promise.all(promises.map( (callback) => callback() ));
         }
