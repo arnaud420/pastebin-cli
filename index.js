@@ -67,24 +67,29 @@ else if (key.options.list) {
 
     Request.getUserPastes(pastebin, API_USER_NAME)
         .then( (res) => {
-            pastes = res;
-            inquirer.prompt(questions.userList)
-                .then( (answers) => {
-                    if (answers.action === 'Delete one paste') {
-                        inquirer.prompt(questions.deleteChoice(pastes))
-                            .then( (answer) => {
-                                pastebin.deletePaste(answer.delete)
-                                    .then( (res) =>
-                                        console.log(`SUCCESS: Paste deleted !`)
-                                    )
-                                    .catch( (err) =>
-                                        console.error(err)
-                                    )
-                            })
-                    }
-                    else {
-                        console.log('else')
-                    }
-                })
+            if (res === undefined) {
+                process.exit(1);
+            }
+            else {
+                pastes = res;
+                inquirer.prompt(questions.userList)
+                    .then( (answers) => {
+                        if (answers.action === 'Delete one paste') {
+                            inquirer.prompt(questions.deleteChoice(pastes))
+                                .then( (answer) => {
+                                    pastebin.deletePaste(answer.delete)
+                                        .then( (res) =>
+                                            console.log(`SUCCESS: Paste deleted !`)
+                                        )
+                                        .catch( (err) =>
+                                            console.error(err)
+                                        )
+                                })
+                        }
+                        else {
+                            console.log('else')
+                        }
+                    })
+            }
         })
 }
