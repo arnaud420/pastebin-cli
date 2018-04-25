@@ -64,6 +64,7 @@ else if (key.options.download) {
 
 else if (key.options.list) {
     let pastes;
+    const promises = [];
 
     Request.getUserPastes(pastebin, API_USER_NAME)
         .then( (res) => {
@@ -71,25 +72,35 @@ else if (key.options.list) {
                 process.exit(1);
             }
             else {
-                pastes = res;
-                inquirer.prompt(questions.userList)
-                    .then( (answers) => {
-                        if (answers.action === 'Delete one paste') {
-                            inquirer.prompt(questions.deleteChoice(pastes))
-                                .then( (answer) => {
-                                    pastebin.deletePaste(answer.delete)
-                                        .then( (res) =>
-                                            console.log(`SUCCESS: Paste deleted !`)
-                                        )
-                                        .catch( (err) =>
-                                            console.error(err)
-                                        )
-                                })
-                        }
-                        else {
-                            console.log('else')
-                        }
-                    })
+                setTimeout( () => {
+                    pastes = res;
+                    inquirer.prompt(questions.userList)
+                        .then( (answers) => {
+                            if (answers.action === 'Delete one paste') {
+                                inquirer.prompt(questions.deleteChoice(pastes))
+                                    .then( (answer) => {
+                                        pastebin.deletePaste(answer.delete)
+                                            .then( (res) =>
+                                                console.log(`SUCCESS: Paste deleted !`)
+                                            )
+                                            .catch( (err) =>
+                                                console.error(err)
+                                            )
+                                    })
+                            }
+                            else {
+                                inquirer.prompt(questions.downloadFiles())
+                                    .then( (answer) => {
+                                        pastes.forEach( (el) => {
+                                            promises.push( () => {
+                                                Request.getPastebin(pastebin, el.key, answer.directory);
+                                            });
+                                        });
+                                        Request.postOrGetMultiplePastebin(promises);
+                                    })
+                            }
+                        })
+                }, 1500);
             }
         })
 }

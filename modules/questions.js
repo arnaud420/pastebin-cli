@@ -99,8 +99,19 @@ const deleteChoice = (pastes) => {
     ]
 };
 
+const downloadFiles = () => {
+    return [
+        {
+            type: 'input',
+            name: 'directory',
+            message: 'Where do you want to save your pastes ?'
+        }
+    ]
+};
+
 module.exports = {
     post,
     userList,
-    deleteChoice
+    deleteChoice,
+    downloadFiles
 };
