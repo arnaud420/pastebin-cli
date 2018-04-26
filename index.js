@@ -80,7 +80,7 @@ else if (key.options.list) {
                                 inquirer.prompt(questions.deleteChoice(pastes))
                                     .then( (answer) => {
                                         pastebin.deletePaste(answer.delete)
-                                            .then( (res) =>
+                                            .then( () =>
                                                 console.log(`SUCCESS: Paste deleted !`)
                                             )
                                             .catch( (err) =>
