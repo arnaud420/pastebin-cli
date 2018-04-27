@@ -74,7 +74,8 @@ const userList = [
         message: "What do you want to do ?",
         choices: [
             'Delete one paste',
-            'Download all my pastes'
+            'Download all my pastes',
+            'Leave'
         ]
     }
 ];
