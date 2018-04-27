@@ -5,46 +5,24 @@ const File = require('./File');
 
 class Request {
 
-    // Prepare to post a file in pastebin with good extension and filename
+    // Post a file in pastebin with good extension and filename
     static async postPastebin(obj, src, privacy, time) {
         const fileExt = mod.getFullNameFromExt(path.parse(src).ext);
         const fileName = path.basename(src);
 
-        return obj.createPasteFromFile(src, fileName, fileExt, privacy, time)
-            .then( (res) =>
-                console.log(`SUCCESS: Your pastebin for ${src} is here => ${res}`)
-            );
-    }
-
-    // Post only one file to pastebin
-    static async postOnePastebin(obj, src, privacy, time) {
         try {
-            await this.postPastebin(obj, src, privacy, time)
+            const res = await obj.createPasteFromFile(src, fileName, fileExt, privacy, time);
+            console.log(`SUCCESS: Your pastebin for ${src} is here => ${res}`)
         }
         catch (e) {
             console.error(e.message);
         }
     }
 
-    // Post or get multiples promises found in an array
-    static async postOrGetMultiplePastebin(promises) {
-        try {
-            await Promise.all(promises.map( (callback) => callback() ));
-        }
-        catch (e) {
-            console.error(e.message);
-        }
-    }
-
-    // Fetch a pastebin raw by it id
-    static async fetchPastebin(obj, pasteId) {
-        return obj.getPaste(pasteId);
-    }
-
-    // Then create a file with pastebin raw and save it in a directory
+    // Get a paste raw then create a file and save it in a directory
     static async getPastebin(obj, pasteId, dir) {
         try {
-            const pasteContent = await this.fetchPastebin(obj, pasteId);
+            const pasteContent = await obj.getPaste(pasteId);
             const file = new File(pasteId, dir);
 
             file.save(pasteContent);
@@ -54,16 +32,11 @@ class Request {
         }
     }
 
-    // Fetch list of user pastes
-    static async fetchUserPastes(obj) {
-        return obj.listUserPastes();
-    }
-
     // Then get all pastes of user and return an array with paste key and title
     static async getUserPastes(obj, username) {
         try {
             let pastesData = [];
-            const pastes = await this.fetchUserPastes(obj);
+            const pastes = await obj.listUserPastes();
             const pastesL = pastes.length;
 
             if (!pastesL) {
