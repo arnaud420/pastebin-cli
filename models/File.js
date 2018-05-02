@@ -25,7 +25,8 @@ class File {
         else {
             mkdirp(path, (err) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err.message);
+                    process.exit(1);
                 }
                 else {
                     this.writeFile(pasteContent);

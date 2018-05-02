@@ -2,8 +2,9 @@
 
 const PastebinAPI = require('pastebin-js');
 const inquirer = require("inquirer");
+const fs = require('fs-extra');
 const { API_KEY, API_USER_NAME, API_USER_PASSWORD } = require('./config.js');
-const { Key, Request, File } = require('./models');
+const { Key, Request } = require('./models');
 const questions = require('./modules/questions');
 
 const pastebin = new PastebinAPI({
@@ -18,17 +19,20 @@ if (key.options.post) {
     const file = key.options.post;
     const files = key.options.args;
 
-    inquirer.prompt(questions.post).then(answers => {
-            if (!files.length) {
-                Request.postPastebin(pastebin, file, answers.privacy, answers.expire);
+    async function main() {
+        const answers = await inquirer.prompt(questions.post);
+
+        if (!files.length) {
+            Request.postPastebin(pastebin, file, answers.privacy, answers.expire);
+        }
+        else {
+            files.push(file);
+            for (let i = 0; i < files.length; i++) {
+                Request.postPastebin(pastebin, files[i], answers.privacy, answers.expire);
             }
-            else {
-                files.push(file);
-                for (let i = 0; i < files.length; i++) {
-                    Request.postPastebin(pastebin, files[i], answers.privacy, answers.expire);
-                }
-            }
-        });
+        }
+    }
+    main();
 }
 
 else if (key.options.download) {
@@ -91,8 +95,7 @@ else if (key.options.list) {
         const answer = await inquirer.prompt(questions.downloadFiles());
         pastes.forEach( (el) => {
             Request.getPastebin(pastebin, el.key, answer.directory);
-        });
-        main();
+        })
     }
 
     async function main() {
@@ -104,6 +107,46 @@ else if (key.options.list) {
             setTimeout( () => {
                 askQuestions();
             }, 1500);
+        }
+    }
+    main();
+}
+
+else if (key.options.fatpost) {
+    let filesArray = [];
+    let promises = [];
+    let files = [];
+    const pasteName = key.options.fatpost;
+    const directories = key.options.args;
+
+    async function scanDir(dir) {
+        const files = await fs.readdir(dir);
+        files.forEach(file => {
+            const filePath = dir + '/' + file;
+            if (fs.statSync(filePath).isFile() === true) {
+                filesArray.push(filePath);
+            }
+        })
+    }
+
+    async function main() {
+        directories.forEach( (dir) => {
+            files.push(scanDir(dir));
+        });
+        await Promise.all(files);
+
+        filesArray.forEach( (file) => {
+            promises.push(fs.readFile(file, { encoding: 'utf8' }));
+        });
+        const answer = await inquirer.prompt(questions.post);
+        const bigFatPaste = await Promise.all(promises);
+
+        try {
+            const result = await pastebin.createPaste(bigFatPaste.toString(), pasteName, null, answer.privacy, answer.expire);
+            console.log(`SUCCESS: Your fat paste is here => ${result}`);
+        }
+        catch (e) {
+            console.error(e.message);
         }
     }
     main();
