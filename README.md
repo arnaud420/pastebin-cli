@@ -17,6 +17,7 @@ Script utilisant l'api de pastebin. Il permet de :
 git clone https://github.com/arnaud420/pastebin-cli.git
 cd pastebin-cli
 npm i
+pastebin -h
 ```
 
 ## Config
