@@ -1,6 +1,6 @@
-const API_KEY = 'YOUR_API_KEY';
-const API_USER_NAME = 'YOUR_USER_NAME';
-const API_USER_PASSWORD = 'YOUR_PASSWORD';
+const API_KEY = '44b8916ab09d17d8e29220fe2d4cf798';
+const API_USER_NAME = 'script_test';
+const API_USER_PASSWORD = 'ertyerty';
 
 module.exports = {
 	API_KEY,
