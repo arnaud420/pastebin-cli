@@ -16,6 +16,12 @@ function getFullNameFromExt(ext) {
 			return 'sql';
 		case '.json':
 			return 'json';
+		case '.sh':
+			return 'bash';
+		case '.cpp':
+			return 'C++';
+		case '.c':
+			return 'C';
 	    default:
 	        return 'text';
 	}
