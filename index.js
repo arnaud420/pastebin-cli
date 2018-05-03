@@ -3,6 +3,7 @@
 const PastebinAPI = require('pastebin-js');
 const inquirer = require("inquirer");
 const fs = require('fs-extra');
+const path = require('path');
 const { API_KEY, API_USER_NAME, API_USER_PASSWORD } = require('./config.js');
 const { Key, Request } = require('./models');
 const questions = require('./modules/questions');
@@ -129,6 +130,17 @@ else if (key.options.fatpost) {
         })
     }
 
+    async function readContent(file) {
+        const filename = path.basename(file);
+
+        try {
+            const content = await fs.readFile(file, { encoding: 'utf8'});
+            return `\n<====== ${filename} ======>\n${content}`;
+        } catch (e) {
+            throw e;
+        }
+    }
+
     async function main() {
         directories.forEach( (dir) => {
             files.push(scanDir(dir));
@@ -136,7 +148,7 @@ else if (key.options.fatpost) {
         await Promise.all(files);
 
         filesArray.forEach( (file) => {
-            promises.push(fs.readFile(file, { encoding: 'utf8' }));
+            promises.push(readContent(file));
         });
         const answer = await inquirer.prompt(questions.post);
         const bigFatPaste = await Promise.all(promises);
