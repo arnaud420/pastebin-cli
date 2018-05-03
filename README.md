@@ -24,7 +24,15 @@ pastebin -h
 
 Pour profiter de tous les avantages de ce script, **il est nécessaire de posséder un compte pastebin.**
 
-Un compte de test a déjà été crée dans le fichier config.js.
+Un compte de test a déjà été crée.
+
+Pour le modifier se rendre dans le fichier ./config.js et editer les champs ci dessous.
+
+```
+const API_KEY = 'YOUR_API_KEY';
+const API_USER_NAME = 'YOUR_USER_NAME';
+const API_USER_PASSWORD = 'YOUR_USER_PASSWORD';
+```
 
 
 ## Commandes
